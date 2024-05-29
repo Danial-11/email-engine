@@ -22,7 +22,8 @@ const fetchEmails = async (user) => {
           body: email.body.content,
           status: email.isRead ? 'read' : 'unread',
           date: new Date(email.receivedDateTime)
-        }
+        },
+        id: email.id 
       });
     }
     console.log(`Fetched and indexed emails for user: ${user.email}`);
@@ -39,6 +40,6 @@ const syncEmails = async () => {
 };
 
 // Run syncEmails function periodically (e.g., every minute)
-setInterval(syncEmails, 60000); // 1 minute
+setInterval(syncEmails, 60000);
 
 module.exports = syncEmails;
