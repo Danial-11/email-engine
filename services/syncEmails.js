@@ -1,10 +1,9 @@
 const axios = require('axios');
-const User = require('../models/User');
 const { client } = require('../config/elasticsearch');
 
 const fetchEmails = async (user) => {
-  const url = 'https://graph.microsoft.com/v1.0/me/messages';
-  const headers = { Authorization: `Bearer ${user.accessToken}` };
+  const url = 'https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages';
+  const headers = { Authorization: `Bearer ${user.accessToken}`, Prefer: 'outlook.body-content-type="text"' };
   const params = {
     '$top': 10,
     '$orderby': 'receivedDateTime desc',
@@ -41,13 +40,4 @@ const fetchEmails = async (user) => {
   }
 };
 
-const syncEmails = async () => {
-  const users = await User.find();
-  for (const user of users) {
-    await fetchEmails(user);
-  }
-};
-
-setInterval(syncEmails, 3600000); // Sync every hour
-
-module.exports = syncEmails;
+module.exports = fetchEmails;

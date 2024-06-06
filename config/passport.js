@@ -20,7 +20,6 @@ passport.use(new OAuth2Strategy({
   ]
 }, async (accessToken, refreshToken, params, profile, done) => {
   try {
-    // Fetch user profile from Microsoft Graph API
     const response = await axios.get('https://graph.microsoft.com/v1.0/me', {
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -28,8 +27,6 @@ passport.use(new OAuth2Strategy({
     });
 
     const userProfile = response.data;
-
-    console.log('User Profile:', userProfile);
 
     const user = await User.findOneAndUpdate(
       { outlookId: userProfile.id },
@@ -41,6 +38,7 @@ passport.use(new OAuth2Strategy({
       },
       { upsert: true, new: true }
     );
+
     done(null, user);
   } catch (error) {
     console.error('Error fetching user profile:', error);

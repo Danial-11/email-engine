@@ -6,7 +6,9 @@ const createIndices = async () => {
   try {
     const emailIndexExists = await client.indices.exists({ index: 'emails' });
 
-    if (!emailIndexExists.body) {
+    if (emailIndexExists.body) {
+      console.log('Index "emails" already exists. Moving on.');
+    } else {
       await client.indices.create({
         index: 'emails',
         body: {
@@ -25,7 +27,7 @@ const createIndices = async () => {
       console.log('Created index "emails"');
     }
   } catch (error) {
-    console.error('Error creating indices:', error);
+    console.error('Error checking or creating indices:', error);
   }
 };
 
