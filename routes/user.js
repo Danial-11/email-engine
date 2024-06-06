@@ -8,18 +8,12 @@ router.get('/login', passport.authenticate('oauth2'));
 
 router.get('/callback', passport.authenticate('oauth2', {
   failureRedirect: '/api/user/login',
-  successRedirect: '/api/user/emails',
-}));
-
-router.get('/emails', async (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'User not authenticated' });
-  }
-
-  const user = req.user;
+  session: true,
+}), async (req, res) => {
   try {
+    const user = req.user;
     await fetchEmails(user);
-    // Introduce a delay before proceeding
+
     setTimeout(async () => {
       try {
         const emails = await client.search({
@@ -31,16 +25,27 @@ router.get('/emails', async (req, res) => {
           }
         });
 
-        res.json(emails.hits.hits);
+        req.session.emails = emails.hits.hits;
+
+        // Redirect to the frontend emails view
+        res.redirect('http://localhost:3000/email_view');
       } catch (error) {
         console.error('Error fetching emails:', error);
-        res.status(500).json({ error: 'Error fetching emails' });
+        res.redirect('/api/user/login');
       }
-    }, 3000); // 3 seconds delay
+    }, 3000);
   } catch (error) {
     console.error('Error fetching emails:', error);
-    res.status(500).json({ error: 'Error fetching emails' });
+    res.redirect('/api/user/login');
   }
+});
+
+router.get('/emails', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
+  res.json(req.session.emails || []);
 });
 
 module.exports = router;

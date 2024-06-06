@@ -1,25 +1,25 @@
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import EmailsView from './components/EmailsView';
 import './App.css';
+import './components/EmailsView.css';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route exact path="/" element={
+            <div>
+              <h1>Welcome to the Email Client</h1>
+              <a href="http://localhost:5000/api/user/login">Login with Outlook</a>
+            </div>
+          } />
+          <Route path="/email_view" element={<EmailsView />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;

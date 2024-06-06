@@ -15,7 +15,10 @@ mongoose.connect('mongodb://127.0.0.1:27017/email-engine')
   .catch(err => console.log(err));
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -32,7 +35,6 @@ require('./config/passport');
 
 app.use('/api/user', userRoutes);
 
-// Initialize Elasticsearch indices
 createIndices();
 
 app.listen(5000, () => console.log('Server started on port 5000'));

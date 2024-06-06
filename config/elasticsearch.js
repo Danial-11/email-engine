@@ -27,7 +27,11 @@ const createIndices = async () => {
       console.log('Created index "emails"');
     }
   } catch (error) {
-    console.error('Error checking or creating indices:', error);
+    if (error.meta && error.meta.body && error.meta.body.error && error.meta.body.error.type === 'resource_already_exists_exception') {
+      console.log('Index "emails" already exists. No need to create.');
+    } else {
+      console.error('Error checking or creating indices:', error);
+    }
   }
 };
 

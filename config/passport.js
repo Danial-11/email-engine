@@ -2,7 +2,6 @@ require('dotenv').config();
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
 const axios = require('axios');
-const User = require('../models/User');
 
 passport.use(new OAuth2Strategy({
   authorizationURL: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
@@ -28,16 +27,12 @@ passport.use(new OAuth2Strategy({
 
     const userProfile = response.data;
 
-    const user = await User.findOneAndUpdate(
-      { outlookId: userProfile.id },
-      {
-        outlookId: userProfile.id,
-        email: userProfile.mail || userProfile.userPrincipalName,
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      },
-      { upsert: true, new: true }
-    );
+    const user = {
+      outlookId: userProfile.id,
+      email: userProfile.mail || userProfile.userPrincipalName,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
 
     done(null, user);
   } catch (error) {
@@ -47,14 +42,9 @@ passport.use(new OAuth2Strategy({
 }));
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user);
 });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (error) {
-    done(error);
-  }
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });
