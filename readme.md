@@ -15,26 +15,21 @@ Elasticsearch for storing and searching emails.
   MongoDB
   Elasticsearch
   npm or yarn
-  Setup
-  Backend
-  
+
 # Clone the repository
-``
-git clone https://github.com/yourusername/email-engine.git
-cd email-engine
-Install backend dependencies
-``
+
+``https://github.com/Danial-11/email-engine``
+``cd email-engine``
+``Install backend dependencies``
 
 Start the backend server
 
 # Frontend
 Navigate to the client directory
 Start the frontend server
-``
-cd client
-npm install
-npm start
-``
+``cd client``
+``npm install``
+``npm start``
 
 # Usage
 Login with Outlook
